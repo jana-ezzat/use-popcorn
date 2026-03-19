@@ -1,70 +1,375 @@
-# Getting Started with Create React App
+Below is a COMPLETE, ready-to-run split of your project.
+Every component has its own file with correct imports, props, and exports.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+============================
+FOLDER STRUCTURE
+================
 
-## Available Scripts
+src/
+├── components/
+│   ├── navbar/
+│   │   ├── Navbar.jsx
+│   │   ├── Logo.jsx
+│   │   ├── Search.jsx
+│   │   └── NumResults.jsx
+│   │
+│   ├── layout/
+│   │   ├── Main.jsx
+│   │   └── Box.jsx
+│   │
+│   ├── movies/
+│   │   ├── MovieList.jsx
+│   │   ├── Movie.jsx
+│   │   ├── MovieDetails.jsx
+│   │   └── WatchedMovieList.jsx
+│   │
+│   ├── watched/
+│   │   └── WatchedSummary.jsx
+│   │
+│   ├── ui/
+│   │   ├── Loader.jsx
+│   │   └── ErrorMessage.jsx
+│   │
+│   └── StarRating.jsx
+│
+├── utils/
+│   └── average.js
+│
+├── App.js
 
-In the project directory, you can run:
+=================================================
+COMPONENT FILES
+===============
 
-### `npm start`
+---------------- Navbar ----------------
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+components/navbar/Navbar.jsx
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+import Logo from "./Logo";
 
-### `npm test`
+function Navbar({ children }) {
+return ( <nav className="nav-bar"> <Logo />
+{children} </nav>
+);
+}
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+export default Navbar;
 
-### `npm run build`
+components/navbar/Logo.jsx
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+function Logo() {
+return ( <div className="logo"> <span role="img">🍿</span> <h1>usePopcorn</h1> </div>
+);
+}
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+export default Logo;
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+components/navbar/Search.jsx
 
-### `npm run eject`
+function Search({ query, setQuery }) {
+return (
+<input
+className="search"
+type="text"
+placeholder="Search movies..."
+value={query}
+onChange={(e) => setQuery(e.target.value)}
+/>
+);
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+export default Search;
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+components/navbar/NumResults.jsx
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+function NumResults({ movies }) {
+return ( <p className="num-results">
+Found <strong>{movies.length}</strong> results </p>
+);
+}
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+export default NumResults;
 
-## Learn More
+---------------- Layout ----------------
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+components/layout/Main.jsx
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+function Main({ children }) {
+return <main className="main">{children}</main>;
+}
 
-### Code Splitting
+export default Main;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+components/layout/Box.jsx
 
-### Analyzing the Bundle Size
+import { useState } from "react";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+function Box({ children }) {
+const [isOpen, setIsOpen] = useState(true);
 
-### Making a Progressive Web App
+return ( <div className="box">
+<button className="btn-toggle" onClick={() => setIsOpen((o) => !o)}>
+{isOpen ? "–" : "+"} </button>
+{isOpen && children} </div>
+);
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+export default Box;
 
-### Advanced Configuration
+---------------- UI ----------------
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+components/ui/Loader.jsx
 
-### Deployment
+function Loader() {
+return <p className="loader">Loading...</p>;
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+export default Loader;
 
-### `npm run build` fails to minify
+components/ui/ErrorMessage.jsx
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+function ErrorMessage({ message }) {
+return ( <p className="error"> <span>⚠ </span>
+{message} </p>
+);
+}
+
+export default ErrorMessage;
+
+---------------- Movies ----------------
+
+components/movies/MovieList.jsx
+
+import Movie from "./Movie";
+
+function MovieList({ movies, onSelectMovie }) {
+return ( <ul className="list list-movies">
+{movies.map((movie) => ( <Movie
+       key={movie.imdbID}
+       movie={movie}
+       onSelectMovie={onSelectMovie}
+     />
+))} </ul>
+);
+}
+
+export default MovieList;
+
+components/movies/Movie.jsx
+
+function Movie({ movie, onSelectMovie }) {
+return (
+<li onClick={() => onSelectMovie(movie.imdbID)}>
+<img src={movie.Poster} alt={`${movie.Title} poster`} /> <h3>{movie.Title}</h3> <p> <span>🗓</span> {movie.Year} </p> </li>
+);
+}
+
+export default Movie;
+
+components/movies/MovieDetails.jsx
+
+import { useEffect, useState } from "react";
+import Loader from "../ui/Loader";
+import StarRating from "../StarRating";
+
+const KEY = "86da3408";
+
+function MovieDetails({ selectedId, onCloseMovie }) {
+const [movie, setMovie] = useState({});
+const [isLoading, setIsLoading] = useState(false);
+
+const {
+Title: title,
+Year: year,
+Poster: poster,
+Runtime: runtime,
+imdbRating,
+Plot: plot,
+Released: released,
+Actors: actors,
+Director: director,
+Genre: genre,
+} = movie;
+
+useEffect(() => {
+async function fetchMovie() {
+setIsLoading(true);
+const res = await fetch(
+`https://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+);
+const data = await res.json();
+setMovie(data);
+setIsLoading(false);
+}
+
+```
+fetchMovie();
+```
+
+}, [selectedId]);
+
+return ( <div className="details">
+{isLoading ? ( <Loader />
+) : (
+<> <header> <button className="btn-back" onClick={onCloseMovie}>
+← </button> <img src={poster} alt={title} /> <div className="details-overview"> <h2>{title}</h2> <p>
+{released} • {runtime} </p> <p>{genre}</p> <p>
+⭐ {imdbRating} IMDb rating </p> </div> </header>
+
+```
+      <section>
+        <div className="rating">
+          <StarRating maxRating={10} size={24} />
+        </div>
+        <p>
+          <em>{plot}</em>
+        </p>
+        <p>Starring {actors}</p>
+        <p>Directed by {director}</p>
+      </section>
+    </>
+  )}
+</div>
+```
+
+);
+}
+
+export default MovieDetails;
+
+components/movies/WatchedMovieList.jsx
+
+function WatchedMovieList({ watched }) {
+return ( <ul className="list">
+{watched.map((movie) => ( <li key={movie.imdbID}> <img src={movie.Poster} alt={movie.Title} /> <h3>{movie.Title}</h3> <p>⭐ {movie.imdbRating}</p> <p>🌟 {movie.userRating}</p> <p>⏳ {movie.runtime} min</p> </li>
+))} </ul>
+);
+}
+
+export default WatchedMovieList;
+
+---------------- Watched ----------------
+
+components/watched/WatchedSummary.jsx
+
+import { average } from "../../utils/average";
+
+function WatchedSummary({ watched }) {
+const avgImdbRating = average(watched.map((m) => m.imdbRating));
+const avgUserRating = average(watched.map((m) => m.userRating));
+const avgRuntime = average(watched.map((m) => m.runtime));
+
+return ( <div className="summary"> <h2>Movies you watched</h2> <p>#️⃣ {watched.length} movies</p> <p>⭐ {avgImdbRating.toFixed(1)}</p> <p>🌟 {avgUserRating.toFixed(1)}</p> <p>⏳ {avgRuntime} min</p> </div>
+);
+}
+
+export default WatchedSummary;
+
+---------------- Utils ----------------
+
+utils/average.js
+
+export const average = (arr) =>
+arr.reduce((acc, cur) => acc + cur / arr.length, 0);
+
+---------------- App.js ----------------
+
+import { useEffect, useState } from "react";
+
+import Navbar from "./components/navbar/Navbar";
+import Search from "./components/navbar/Search";
+import NumResults from "./components/navbar/NumResults";
+
+import Main from "./components/layout/Main";
+import Box from "./components/layout/Box";
+
+import MovieList from "./components/movies/MovieList";
+import MovieDetails from "./components/movies/MovieDetails";
+import WatchedSummary from "./components/watched/WatchedSummary";
+import WatchedMovieList from "./components/movies/WatchedMovieList";
+
+import Loader from "./components/ui/Loader";
+import ErrorMessage from "./components/ui/ErrorMessage";
+
+const KEY = "86da3408";
+
+function App() {
+const [query, setQuery] = useState("");
+const [movies, setMovies] = useState([]);
+const [watched, setWatched] = useState([]);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+const [selectedId, setSelectedId] = useState(null);
+
+function handleSelectMovie(id) {
+setSelectedId((cur) => (cur === id ? null : id));
+}
+
+function handleCloseMovie() {
+setSelectedId(null);
+}
+
+useEffect(() => {
+async function fetchMovies() {
+try {
+setLoading(true);
+setError("");
+const res = await fetch(
+`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+);
+const data = await res.json();
+if (data.Response === "False") throw new Error("Movie not found");
+setMovies(data.Search);
+} catch (err) {
+setError(err.message);
+} finally {
+setLoading(false);
+}
+}
+
+```
+if (query.length < 3) {
+  setMovies([]);
+  setError("");
+  return;
+}
+
+fetchMovies();
+```
+
+}, [query]);
+
+return (
+<> <Navbar> <Search query={query} setQuery={setQuery} /> <NumResults movies={movies} /> </Navbar>
+
+```
+  <Main>
+    <Box>
+      {loading && <Loader />}
+      {!loading && !error && (
+        <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+      )}
+      {error && <ErrorMessage message={error} />}
+    </Box>
+
+    <Box>
+      {selectedId ? (
+        <MovieDetails
+          selectedId={selectedId}
+          onCloseMovie={handleCloseMovie}
+        />
+      ) : (
+        <>
+          <WatchedSummary watched={watched} />
+          <WatchedMovieList watched={watched} />
+        </>
+      )}
+    </Box>
+  </Main>
+</>
+```
+
+);
+}
+
+export default App;
